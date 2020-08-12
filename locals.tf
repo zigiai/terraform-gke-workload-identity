@@ -55,7 +55,7 @@ locals {
             var.kubernetes_default_annotations,
             {
               "iam.gke.io/gcp-service-account" = try(
-                google_service_account.gsa[sa.google_service_account_id].email,
+                google_service_account.gsa[sa.email].email,
                 sa.email
               )
             }
