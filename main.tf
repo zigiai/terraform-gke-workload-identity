@@ -35,7 +35,7 @@ resource "kubernetes_namespace" "ns" {
 }
 
 resource "random_string" "gsa_suffix" {
-  for_each = { for sa in local.google_service_accounts : sa.name => sa }
+  for_each = { for sa in local.google_service_accounts : sa.name => sa if ! var.stable_name }
   upper    = false
   lower    = true
   special  = false
@@ -48,9 +48,10 @@ resource "google_service_account" "gsa" {
   for_each    = { for sa in local.google_service_accounts : sa.name => sa }
   description = trimspace(join(" ", compact([each.value.description, "(Terraform managed)"])))
 
-  account_id = trimprefix(format("%s-%s",
-    substr(each.value.label_id, 0, min(25, length(each.value.label_id))),
-    random_string.gsa_suffix[each.key].result
+  account_id = trimprefix(join(
+    "-",
+    var.stable_name ? each.value.label_id : substr(each.value.label_id, 0, min(25, length(each.value.label_id))),
+    var.stable_name ? each.key : random_string.gsa_suffix[each.key].result
   ), "-")
 
   display_name = each.value.display_name

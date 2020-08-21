@@ -66,6 +66,12 @@ variable "google_service_accounts" {
   default     = []
 }
 
+variable "stable_name" {
+  description = "Don't use a random suffix during GSAs creation"
+  type        = bool
+  default     = false
+}
+
 variable "kubernetes_indentities" {
   description = "List of maps definitions for creating Kubernetes service accounts (able to run as GSA)"
   type        = any

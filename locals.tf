@@ -20,7 +20,7 @@ locals {
     for sa in var.google_service_accounts : merge(
       local.google_service_account_defaults,
       {
-        label_id = format("%s-%s", module.label.id, replace(sa.name, "/[[:punct:]]/", "-"))
+        label_id = trimprefix(format("%s-%s", module.label.id, replace(sa.name, "/[[:punct:]]/", "-")), "-")
       },
     sa)
   ]
